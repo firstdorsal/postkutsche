@@ -1,0 +1,16 @@
+{
+    "name": "postkutsche",
+    "version": "1.0.0",
+    "description": "",
+    "main": "index.js",
+    "scripts": {
+        "makedoc": "./generateDoc.sh"
+    },
+    "repository": {
+        "type": "git",
+        "url": "http://git.firstdorsal.eu/firstdorsal/postkutsche.git"
+    },
+    "homepage": "https://firstdorsal.eu/doc/postkutsche/",
+    "author": "Paul Colin Hennig",
+    "license": "MIT"
+}
