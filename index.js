@@ -5,14 +5,16 @@ const {
 } = require(`path`);
 const util = require(`util`);
 const exec = util.promisify(require(`child_process`).exec);
-const MAILSERVER_DOMAIN = `mail.firstdorsal.eu`;
 
-const USE_LEGACY = true;
-const MAILSERVER_IP6 = `[2a01:04f8:0151:03b1::2]`;
-const MAILSERVER_IP4 = `176.9.73.165`;
+require('dotenv').config();
+const MAILSERVER_DOMAIN = process.env.MAILSERVER_DOMAIN
+const USE_LEGACY = process.env.USE_LEGACY
+const MAILSERVER_IP6 = process.env.MAILSERVER_IP6
+const MAILSERVER_IP4 = process.env.MAILSERVER_IP4
+const MAIL_DOMAIN = process.env.MAIL_DOMAIN
 const MAILSERVER_IP = USE_LEGACY ? MAILSERVER_IP4 : MAILSERVER_IP6;
 
-const MAIL_DOMAIN = `firstdorsal.eu`;
+
 
 const tlsaQuestions = [{
     name: `smtp over starttls`,
