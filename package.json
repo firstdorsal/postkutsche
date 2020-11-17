@@ -7,11 +7,15 @@
         "type": "git",
         "url": "http://git.y.gy/firstdorsal/postkutsche.git"
     },
-    "homepage": "https://firstdorsal.eu/doc/postkutsche/",
+    "homepage": "https://doc.y.gy/postkutsche/",
     "author": "Paul Colin Hennig",
     "license": "MIT",
     "devDependencies": {
         "dotenv": "^8.2.0",
         "eslint": "^7.13.0"
+    },
+    "dependencies": {
+        "@firstdorsal/powerdns-api": "^1.7.2",
+        "mailcow-api": "^1.1.3"
     }
 }
