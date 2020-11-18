@@ -2,6 +2,9 @@
 
 const exec = require(`util`).promisify(require(`child_process`).exec);
 const secondLevelRegex = new RegExp(/[A-Z-a-z0-9]{1,63}\.[A-Z-a-z0-9]{1,63}$/);
+const crypto = require('crypto');
+
+
 
 const {
     MailcowApiClient
@@ -101,7 +104,7 @@ module.exports.Postkutsche = class {
             }, {
                 name: `_autodiscover._tcp.${info.mailDomain}.`,
                 type: 'SRV',
-                content: [`1 1 443 ${info.mailServerHostname}.`]
+                content: [`0 1 443 ${info.mailServerHostname}.`]
             }, {
                 name: `autoconfig.${info.mailDomain}.`,
                 type: 'CNAME',
@@ -113,7 +116,7 @@ module.exports.Postkutsche = class {
             }, {
                 name: `_dmarc.${info.mailDomain}.`,
                 type: `TXT`,
-                content: [`"v=DMARC1;p=reject;sp=reject;rua=mailto:${info.postmasterEmail};ruf=mailto:${info.postmasterEmail};adkim=s;aspf=s;"`]
+                content: [`"v=DMARC1;p=reject;sp=reject;${info.postmasterEmail?"rua=mailto:"+info.postmasterEmail+";ruf=mailto:"+info.postmasterEmail+";":""}adkim=s;aspf=s;"`]
             }, {
                 name: `_imap._tcp.${info.mailDomain}.`,
                 type: 'SRV',
@@ -181,44 +184,30 @@ module.exports.Postkutsche = class {
             type: 'TXT',
             content: [`"${add[2].dkim_txt}"`]
         });
-        if (info.mailDomain !== info.dmarcMail.match(secondLevelRegex)[0]) {
+        if (info.dmarcMail && info.mailDomain !== info.dmarcMail.match(secondLevelRegex)[0]) {
             this.pdns.setHomogeneousRecords([{
                 name: `${info.mailDomain}._report._dmarc.${info.dmarcMail.match(secondLevelRegex)[0]}`,
                 type: 'TXT',
                 content: [`"v=DMARC1"`]
-            }])
+            }]).catch(e => console.log(e))
         }
 
 
         await Promise.all([
-            this.pdns.setHomogeneousRecords(records),
+            this.pdns.setHomogeneousRecords(records).catch(e => console.log(e)),
             this.mcc.addMailbox({
                 domain: info.mailDomain,
                 name: info.defaultMailbox.name,
-                local_part: info.defaultMailbox.local_part
+                local_part: info.defaultMailbox.local_part,
+                password: info.defaultMailbox.password ? info.defaultMailbox.password : undefined
             })
         ]);
+        this.mcc.addAlias(`@${info.mailDomain}`, `${info.defaultMailbox.local_part}@${info.mailDomain}`)
     }
 
 
 
-    cleanupAddMailDomain = async (info) => {
-        await this.mcc.deleteMailbox(`${info.defaultMailbox.local_part}@${info.mailDomain}`)
 
-        await Promise.all([
-            this.mcc.deleteDomain(info.mailDomain),
-            this.mcc.deleteDKIM(info.mailDomain),
-            this.pdns.deleteZone(info.mailDomain),
-        ]);
-
-        if (info.mailDomain !== info.dmarcMail.match(secondLevelRegex)[0]) {
-            this.pdns.deleteRecords([{
-                name: `${info.mailDomain}._report._dmarc.${info.dmarcMail.match(secondLevelRegex)[0]}`,
-                type: 'TXT'
-            }])
-        }
-
-    }
 
     addMailServerDnsRecords = async (info) => {
         info.domain = info.mailServerHostname
@@ -256,10 +245,49 @@ module.exports.Postkutsche = class {
         });
     }
 
+    openpgpHash = (string) => {
+        return crypto.createHash('sha256').update(string).digest('hex').substr(0, 56);
+    }
 
+    openpgpRecord = (local_part, publicKeyB64) => {
+
+        const c = publicKeyB64.replaceAll(/[\n\r\s]*/g, '').replace('-----BEGINPGPPUBLICKEYBLOCK-----', '').replace('-----ENDPGPPUBLICKEYBLOCK-----', '').match(/^[A-Za-z0-9+/]*/)[0];
+        if (!c) throw Error('Invalid Public Key')
+        return {
+            name: `${this.openpgpHash(local_part)}._openpgpkey.`,
+            type: `OPENPGPKEY`,
+            content: [c]
+        }
+    }
+    setOpenpgpRecord = async (local_part, domain, publicKeyB64) => {
+
+        const record = this.openpgpRecord(local_part, publicKeyB64);
+        record.name = record.name + domain;
+        await this.pdns.setRecords([record]).catch(e => console.log(e))
+    }
 
 
     cleanupAddMailServer = async (info) => {
         await this.pdns.deleteZone(info.mailServerHostname)
     }
+
+    cleanupAddMailDomain = async (info) => {
+        await this.mcc.deleteMailbox(`${info.defaultMailbox.local_part}@${info.mailDomain}`).catch(e => console.log(e))
+
+        await Promise.all([
+            this.mcc.deleteDomain(info.mailDomain),
+            this.mcc.deleteDKIM(info.mailDomain),
+            this.pdns.deleteZone(info.mailDomain),
+        ]);
+
+        if (info.dmarcMail && info.mailDomain !== info.dmarcMail.match(secondLevelRegex)[0]) {
+            this.pdns.deleteRecords([{
+                name: `${info.mailDomain}._report._dmarc.${info.dmarcMail.match(secondLevelRegex)[0]}`,
+                type: 'TXT'
+            }]).catch(e => console.log(e))
+        }
+
+    }
+
+
 }
