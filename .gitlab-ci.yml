@@ -25,7 +25,6 @@ makedoc:
     - git config --global user.name "runner"
     - git remote remove origin
     - git remote add origin https://runner:${RUNNER_PASSWORD}@$CI_SERVER_HOST/$CI_PROJECT_PATH
-    - ls
     - git add README.md index.js 
     - git commit README.md index.js -m "🤖 makedoc [skip ci]" || true
     - git push --set-upstream origin HEAD:master || true
