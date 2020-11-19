@@ -416,6 +416,15 @@ module.exports.Postkutsche = class {
      * @async
      * @returns {Boolean} true on success
      * @example
+        await pk.addMailServerDnsRecords({
+            nameserver: ['ns1.domain.tld', 'ns2.domain.tld', 'ns3.domain.tld'],
+            hostmasterEmail: 'hostmaster@domain.tld',
+            mailServerHostname: 'mail.domain.tld',
+            mailServerIp: '2a00:1450:4016:801::2003', //Your IPv6 address WITHOUT brackets([]) 
+            mailServerLegacyIp: '127.0.0.1',//Your IPv4 address
+            addLetsEncryptCAA: true,
+            caaReportMail: 'caa.report@domain.tld' //can be set if you want to get reports on malicious cert issues
+    });
      */
     addMailServerDnsRecords = async (info, log = true) => {
         info.domain = info.mailServerHostname
