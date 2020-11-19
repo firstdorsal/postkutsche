@@ -1,6 +1,6 @@
 {
     "name": "postkutsche",
-    "version": "0.0.2",
+    "version": "1.0.0",
     "description": "Combines PowerDns and Mailcow to create a mail domain with all required entries on both services in a single command.",
     "main": "index.js",
     "repository": {
