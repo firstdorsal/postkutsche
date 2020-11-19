@@ -1,7 +1,7 @@
 {
     "name": "postkutsche",
-    "version": "0.0.1",
-    "description": "",
+    "version": "0.0.2",
+    "description": "Combines PowerDns and Mailcow to create a mail domain with all required entries on both services in a single command.",
     "main": "index.js",
     "repository": {
         "type": "git",
@@ -9,7 +9,7 @@
     },
     "homepage": "https://doc.y.gy/postkutsche/",
     "author": "Paul Colin Hennig",
-    "license": "MIT",
+    "license": "Mozilla Public License 2.0",
     "devDependencies": {
         "dotenv": "^8.2.0",
         "eslint": "^7.13.0"
@@ -17,5 +17,21 @@
     "dependencies": {
         "@firstdorsal/powerdns-api": "^1.7.2",
         "mailcow-api": "^1.1.3"
-    }
+    },
+    "keywords": [
+        "powerdns",
+        "dns",
+        "api",
+        "wrapper",
+        "pdns",
+        "pdns-api",
+        "powerdns-api",
+        "mailcow",
+        "mail",
+        "post",
+        "server",
+        "mailserver",
+        "box",
+        "automate"
+    ]
 }
