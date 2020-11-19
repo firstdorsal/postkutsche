@@ -12,7 +12,7 @@ makedoc:
     - yarn add docdash-orange jsdoc jsdoc-to-markdown --dev
     # generate index.js from raw
     - cat index.raw.js > index.js
-    - sed -i "s/DOC_URL/$DOC_URL/g" index.js
+    - sed -i "s|DOC_URL|$DOC_URL|g" index.js
     # generate doc
     - cat README_basic.md > README.md
     - node_modules/.bin/jsdoc2md index.js >> README.md
@@ -33,7 +33,7 @@ publish:
     - DOC_URL=https://doc.y.gy
     #generate index.js
     - cat index.raw.js > index.js
-    - sed -i "s/DOC_URL/$DOC_URL/g" index.js
+    - sed -i "s|DOC_URL|$DOC_URL|g" index.js
     #generate readme doc
     - yarn jsdoc jsdoc-to-markdown --dev
     - cat README_basic.md > README.md
