@@ -9,7 +9,7 @@ makedoc:
   script:
     - DOC_URL=https://doc.y.gy
     #install
-    - yarn add docdash-orange jsdoc jsdoc-to-markdown
+    - yarn add docdash-orange jsdoc jsdoc-to-markdown --dev
     # generate doc
     - cat README_basic.md > README.md
     - cat index.raw.js > index.js
@@ -34,9 +34,9 @@ publish:
     - cat index.raw.js > index.js
     - sed -i "s/DOC_URL/$DOC_URL/" README_basic.md
     #generate readme doc
-    - npm install jsdoc jsdoc-to-markdown --save-dev
+    - yarn jsdoc jsdoc-to-markdown --dev
     - cat README_basic.md > README.md
     - node_modules/.bin/jsdoc2md index.js >> README.md
     #publish to npm
     - echo '//registry.npmjs.org/:_authToken=${NPM_TOKEN}'>.npmrc
-    - npm publish
+    - yarn publish
