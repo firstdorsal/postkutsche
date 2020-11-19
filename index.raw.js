@@ -490,7 +490,7 @@ module.exports.Postkutsche = class {
      * Creates the front part of the openpgp dns record
      * @param {String} localPart local part of your email address (the part before the @ not including the @)
      * @example
-       console.log(openpgpHash('max.mustermensch'));
+       console.log(pk.openpgpHash('max.mustermensch'));
      */
     openpgpHash = (localPart) => {
         return crypto.createHash('sha256').update(localPart).digest('hex').substr(0, 56);
@@ -502,7 +502,7 @@ module.exports.Postkutsche = class {
      * @param {String} publicKeyB64 your publickey in base64 (it should be correct if it includes -----BEGIN PGP PUBLICKEY BLOCK-----) or only contains these characters: A-Z a-z 0-9 + /
      * @returns {OpenpgpRecord}
      * @example
-       console.log(openpgpRecord('max.mustermensch','-----BEGIN PGP (...)'));
+       console.log(pk.openpgpRecord('max.mustermensch','-----BEGIN PGP (...)'));
      */
     openpgpRecord = (localPart, publicKeyB64) => {
         const c = publicKeyB64.replaceAll(/[\n\r\s]*/g, '').replace('-----BEGINPGPPUBLICKEYBLOCK-----', '').replace('-----ENDPGPPUBLICKEYBLOCK-----', '').match(/^[A-Za-z0-9+/]*/)[0];
@@ -522,7 +522,7 @@ module.exports.Postkutsche = class {
      * @param {String} publicKeyB64 your publickey in base64 (it should be correct if it includes -----BEGIN PGP PUBLICKEY BLOCK-----) or only contains these characters: A-Z a-z 0-9 + /
      * @async
      * @example
-       console.log(setOpenpgpRecord('max.mustermensch','domain.tld','-----BEGIN PGP (...)'));
+       await pk.setOpenpgpRecord('max.mustermensch','domain.tld','-----BEGIN PGP (...)');
      */
     setOpenpgpRecord = async (localPart, domain, publicKeyB64) => {
         const record = this.openpgpRecord(localPart, publicKeyB64);
@@ -535,7 +535,7 @@ module.exports.Postkutsche = class {
      * @param {Info} info {@link DOC_URL/global.html#Info Info} object with the necessary information to delete the mailserver domain 
      * @async
      * @example
-        cleanupAddMailServer({mailServerHostname:'mail.domain.tld'});
+        pk.cleanupAddMailServer({mailServerHostname:'mail.domain.tld'});
      */
     cleanupAddMailServer = async (info) => {
         await this.pdns.deleteZone(info.mailServerHostname);
