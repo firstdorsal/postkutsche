@@ -5,7 +5,7 @@
 [![Website](https://ico.y.gy/website?down_color=red&down_message=offline&label=repository&up_color=success&up_message=online&url=https%3A%2F%2Fgit.y.gy%2Ffirstdorsal%2Fpostkutsche&style=flat-square&logo=gitlab)](https://git.y.gy/firstdorsal/postkutsche/)
 
 # Description
-A module that combines PowerDns and Mailcow to create a mail domain with all required entries on both services in a single command.
+A module that combines **PowerDns** and **Mailcow** to create a mail domain with all required entries on both services in a single command.
 
 # Install
 ```
