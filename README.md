@@ -1,5 +1,5 @@
 [![npm](https://ico.y.gy/npm/dm/postkutsche?style=flat-square&logo=npm)](https://www.npmjs.com/package/postkutsche)
-[![NPM](https://ico.y.gy/npm/l/postkutsche?style=flat-square)](https://www.npmjs.com/package/postkutsche)
+[![NPM](https://ico.y.gy/npm/l/postkutsche?style=flat-square&color=success)](https://www.npmjs.com/package/postkutsche)
 [![Snyk Vulnerabilities for npm package](https://ico.y.gy/snyk/vulnerabilities/npm/postkutsche?style=flat-square&logo=snyk)](https://snyk.io/test/npm/postkutsche)
 [![Website](https://ico.y.gy/website?down_color=red&down_message=offline&label=documentation&up_color=success&up_message=online&url=https%3A%2F%2Fdoc.y.gy%2Fpostkutsche&style=flat-square)](https://doc.y.gy/postkutsche/)
 [![Website](https://ico.y.gy/website?down_color=red&down_message=offline&label=repository&up_color=success&up_message=online&url=https%3A%2F%2Fgit.y.gy%2Ffirstdorsal%2Fpostkutsche&style=flat-square&logo=gitlab)](https://git.y.gy/firstdorsal/postkutsche/)
