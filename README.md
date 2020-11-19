@@ -143,7 +143,7 @@ Create a postkutsche client.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| info | [<code>ApiInfo</code>](#ApiInfo) | The provided [ApiInfo](https://doc.y.gy/global.html#ApiInfo) object |
+| info | [<code>ApiInfo</code>](#ApiInfo) | The provided [ApiInfo](https://doc.y.gy/postkutsche/global.html#ApiInfo) object |
 
 **Example**  
 ```js
@@ -199,7 +199,7 @@ Create a postkutsche client.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| info | [<code>Info</code>](#Info) | [Info](https://doc.y.gy/global.html#Info) object with the necessary information to generate the tlsa records |
+| info | [<code>Info</code>](#Info) | [Info](https://doc.y.gy/postkutsche/global.html#Info) object with the necessary information to generate the tlsa records |
 
 **Example**  
 ```js
@@ -217,7 +217,7 @@ await pk.getTLSA({
 
 | Param | Type | Description |
 | --- | --- | --- |
-| info | [<code>Info</code>](#Info) | [Info](https://doc.y.gy/global.html#Info) object with the necessary information to generate the domain mail records |
+| info | [<code>Info</code>](#Info) | [Info](https://doc.y.gy/postkutsche/global.html#Info) object with the necessary information to generate the domain mail records |
 
 **Example**  
 ```js
@@ -247,7 +247,7 @@ This will add:
 
 | Param | Type | Default | Description |
 | --- | --- | --- | --- |
-| info | [<code>Info</code>](#Info) |  | [Info](https://doc.y.gy/global.html#Info) object with the necessary information to create a mail domain on mailcow and the necessary records on powerdns |
+| info | [<code>Info</code>](#Info) |  | [Info](https://doc.y.gy/postkutsche/global.html#Info) object with the necessary information to create a mail domain on mailcow and the necessary records on powerdns |
 | [log] | <code>Boolean</code> | <code>true</code> | you can disable logging by setting this to false |
 
 **Example**  
@@ -280,7 +280,7 @@ This will add:
 
 | Param | Type | Default | Description |
 | --- | --- | --- | --- |
-| info | [<code>Info</code>](#Info) |  | [Info](https://doc.y.gy/global.html#Info) object with the necessary information to create the relevant records for the mailserver |
+| info | [<code>Info</code>](#Info) |  | [Info](https://doc.y.gy/postkutsche/global.html#Info) object with the necessary information to create the relevant records for the mailserver |
 | [log] | <code>Boolean</code> | <code>true</code> | you can disable logging by setting this to false |
 
 **Example**  
@@ -353,7 +353,7 @@ Will delete the complete mailserver domain from powerdns
 
 | Param | Type | Description |
 | --- | --- | --- |
-| info | [<code>Info</code>](#Info) | [Info](https://doc.y.gy/global.html#Info) object with the necessary information to delete the mailserver domain |
+| info | [<code>Info</code>](#Info) | [Info](https://doc.y.gy/postkutsche/global.html#Info) object with the necessary information to delete the mailserver domain |
 
 **Example**  
 ```js
@@ -369,7 +369,7 @@ THIS WILL DELETE YOUR MAILBOX AND EVERYTHING ELSE CONCERNING THIS DOMAIN
 
 | Param | Type | Description |
 | --- | --- | --- |
-| info | [<code>Info</code>](#Info) | [Info](https://doc.y.gy/global.html#Info) object with the necessary information to create a mail domain on mailcow and the necessary records on powerdns |
+| info | [<code>Info</code>](#Info) | [Info](https://doc.y.gy/postkutsche/global.html#Info) object with the necessary information to create a mail domain on mailcow and the necessary records on powerdns |
 
 **Example**  
 ```js

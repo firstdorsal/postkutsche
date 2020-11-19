@@ -126,7 +126,7 @@ module.exports.Postkutsche = class {
     /**
      * Create a postkutsche client.
      * @constructor
-     * @param {ApiInfo} info The provided {@link https://doc.y.gy/global.html#ApiInfo ApiInfo} object
+     * @param {ApiInfo} info The provided {@link https://doc.y.gy/postkutsche/global.html#ApiInfo ApiInfo} object
      */
     constructor(info) {
         this.mcc = new MailcowApiClient(info.mailcow.url, info.mailcow.apikey);
@@ -134,7 +134,7 @@ module.exports.Postkutsche = class {
     }
 
     /**
-     * @param {Info} info {@link https://doc.y.gy/global.html#Info Info} object with the necessary information to generate the tlsa records
+     * @param {Info} info {@link https://doc.y.gy/postkutsche/global.html#Info Info} object with the necessary information to generate the tlsa records
      * @async
      * @returns {Array} with tlsa records ready to be inserted into powerdns
      * @example
@@ -220,7 +220,7 @@ module.exports.Postkutsche = class {
     }
 
     /**
-     * @param {Info} info {@link https://doc.y.gy/global.html#Info Info} object with the necessary information to generate the domain mail records
+     * @param {Info} info {@link https://doc.y.gy/postkutsche/global.html#Info Info} object with the necessary information to generate the domain mail records
      * @returns {Array} with domain relevant mail records
      * @example
         pk.genMailDomainRecords({
@@ -324,7 +324,7 @@ module.exports.Postkutsche = class {
      *      - Mail records for the domain (won't touch other records but will overwrite present matching records)
      *      - DNSSEC (if domain wasn't present)
      *      - Create record on mailServerDomain(if not the same as mailDomain) to allow dmarc mails to sent to this domain
-     * @param {Info} info {@link https://doc.y.gy/global.html#Info Info} object with the necessary information to create a mail domain on mailcow and the necessary records on powerdns
+     * @param {Info} info {@link https://doc.y.gy/postkutsche/global.html#Info Info} object with the necessary information to create a mail domain on mailcow and the necessary records on powerdns
      * @param {Boolean} [log=true] you can disable logging by setting this to false
      * @async
      * @returns {Boolean} true on success
@@ -412,7 +412,7 @@ module.exports.Postkutsche = class {
      *      - DNSSEC (will replace old dnssec if present)
      *      - TLSA records for the domain (for the creation of the tlsa records you need to have openssl installed. you can specify the path, if it can't be found globally as 'openssl')
      *      - Records for the mailserver
-     * @param {Info} info {@link https://doc.y.gy/global.html#Info Info} object with the necessary information to create the relevant records for the mailserver
+     * @param {Info} info {@link https://doc.y.gy/postkutsche/global.html#Info Info} object with the necessary information to create the relevant records for the mailserver
      * @param {Boolean} [log=true] you can disable logging by setting this to false
      * @async
      * @returns {Boolean} true on success
@@ -442,7 +442,7 @@ module.exports.Postkutsche = class {
         if (log) {
             console.log(`Creating TLSA records for your mail server domain.`);
             console.log(`Info: You need to have openssl installed for this to work`);
-            console.log(`Info: If openssl is not accessible throug the global command 'openssl' you can specify the path by adding it to the passed info object with the key 'openssl_path' for more information look here https://doc.y.gy/global.html#Info`);
+            console.log(`Info: If openssl is not accessible throug the global command 'openssl' you can specify the path by adding it to the passed info object with the key 'openssl_path' for more information look here https://doc.y.gy/postkutsche/global.html#Info`);
         }
         const records = (await this.getTLSA(info)).map((e) => {
             return e.dns
@@ -532,7 +532,7 @@ module.exports.Postkutsche = class {
 
     /**
      * Will delete the complete mailserver domain from powerdns
-     * @param {Info} info {@link https://doc.y.gy/global.html#Info Info} object with the necessary information to delete the mailserver domain 
+     * @param {Info} info {@link https://doc.y.gy/postkutsche/global.html#Info Info} object with the necessary information to delete the mailserver domain 
      * @async
      * @example
         pk.cleanupAddMailServer({mailServerHostname:'mail.domain.tld'});
@@ -544,7 +544,7 @@ module.exports.Postkutsche = class {
     /**
      * Will delete a domain from powerdns and mailcow
      * THIS WILL DELETE YOUR MAILBOX AND EVERYTHING ELSE CONCERNING THIS DOMAIN
-     * @param {Info} info {@link https://doc.y.gy/global.html#Info Info} object with the necessary information to create a mail domain on mailcow and the necessary records on powerdns
+     * @param {Info} info {@link https://doc.y.gy/postkutsche/global.html#Info Info} object with the necessary information to create a mail domain on mailcow and the necessary records on powerdns
      * @async
      * @example
          await pk.cleanupAddMailDomain({
