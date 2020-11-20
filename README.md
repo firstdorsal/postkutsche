@@ -109,7 +109,6 @@ Feel free to contact me via [xl9jthv_7bvgakv9o9wg0jabn2ylm91xxrzzgt0e@y.gy](mail
 * [postkutsche](#module_postkutsche)
     * [.Postkutsche](#module_postkutsche.Postkutsche)
         * [new module.exports.Postkutsche(info)](#new_module_postkutsche.Postkutsche_new)
-        * [.getTLSA](#module_postkutsche.Postkutsche+getTLSA) ⇒ <code>Array</code>
         * [.genMailDomainRecords](#module_postkutsche.Postkutsche+genMailDomainRecords) ⇒ <code>Array</code>
         * [.addMailDomain](#module_postkutsche.Postkutsche+addMailDomain) ⇒ <code>Boolean</code>
         * [.addMailServerDnsRecords](#module_postkutsche.Postkutsche+addMailServerDnsRecords) ⇒ <code>Boolean</code>
@@ -118,6 +117,7 @@ Feel free to contact me via [xl9jthv_7bvgakv9o9wg0jabn2ylm91xxrzzgt0e@y.gy](mail
         * [.setOpenpgpRecord](#module_postkutsche.Postkutsche+setOpenpgpRecord)
         * [.cleanupAddMailServer](#module_postkutsche.Postkutsche+cleanupAddMailServer)
         * [.cleanupAddMailDomain](#module_postkutsche.Postkutsche+cleanupAddMailDomain)
+        * [.getTLSA(info)](#module_postkutsche.Postkutsche+getTLSA) ⇒ <code>Array</code>
 
 <a name="module_postkutsche.Postkutsche"></a>
 
@@ -128,7 +128,6 @@ Class representing the Postkutsche client
 
 * [.Postkutsche](#module_postkutsche.Postkutsche)
     * [new module.exports.Postkutsche(info)](#new_module_postkutsche.Postkutsche_new)
-    * [.getTLSA](#module_postkutsche.Postkutsche+getTLSA) ⇒ <code>Array</code>
     * [.genMailDomainRecords](#module_postkutsche.Postkutsche+genMailDomainRecords) ⇒ <code>Array</code>
     * [.addMailDomain](#module_postkutsche.Postkutsche+addMailDomain) ⇒ <code>Boolean</code>
     * [.addMailServerDnsRecords](#module_postkutsche.Postkutsche+addMailServerDnsRecords) ⇒ <code>Boolean</code>
@@ -137,6 +136,7 @@ Class representing the Postkutsche client
     * [.setOpenpgpRecord](#module_postkutsche.Postkutsche+setOpenpgpRecord)
     * [.cleanupAddMailServer](#module_postkutsche.Postkutsche+cleanupAddMailServer)
     * [.cleanupAddMailDomain](#module_postkutsche.Postkutsche+cleanupAddMailDomain)
+    * [.getTLSA(info)](#module_postkutsche.Postkutsche+getTLSA) ⇒ <code>Array</code>
 
 <a name="new_module_postkutsche.Postkutsche_new"></a>
 
@@ -193,24 +193,6 @@ Create a postkutsche client.
     //adds the mail records for a domain and creates the domain on mailcow
     await pk.addMailDomain(info);
 })();
-```
-<a name="module_postkutsche.Postkutsche+getTLSA"></a>
-
-#### postkutsche.getTLSA ⇒ <code>Array</code>
-**Kind**: instance property of [<code>Postkutsche</code>](#module_postkutsche.Postkutsche)  
-**Returns**: <code>Array</code> - with tlsa records ready to be inserted into powerdns  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| info | [<code>Info</code>](#Info) | [Info](https://doc.y.gy/postkutsche/global.html#Info) object with the necessary information to generate the tlsa records |
-
-**Example**  
-```js
-await pk.getTLSA({
-            mailServerHostname: 'mail.domain.tld',
-            mailServerIp: '2a00:1450:4016:801::2003',
-            mailServerLegacyIp: '127.0.0.1'
-        });
 ```
 <a name="module_postkutsche.Postkutsche+genMailDomainRecords"></a>
 
@@ -384,6 +366,24 @@ await pk.cleanupAddMailDomain({
                  name: `Max Mustermensch`
              }
          });
+```
+<a name="module_postkutsche.Postkutsche+getTLSA"></a>
+
+#### postkutsche.getTLSA(info) ⇒ <code>Array</code>
+**Kind**: instance method of [<code>Postkutsche</code>](#module_postkutsche.Postkutsche)  
+**Returns**: <code>Array</code> - with tlsa records ready to be inserted into powerdns  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| info | [<code>Info</code>](#Info) | [Info](https://doc.y.gy/postkutsche/global.html#Info) object with the necessary information to generate the tlsa records |
+
+**Example**  
+```js
+await pk.getTLSA({
+            mailServerHostname: 'mail.domain.tld',
+            mailServerIp: '2a00:1450:4016:801::2003',
+            mailServerLegacyIp: '127.0.0.1'
+        });
 ```
 <a name="ApiInfo"></a>
 
