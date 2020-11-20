@@ -73,9 +73,7 @@ const {
 */
 
 /** @module Postkutsche*/
-/**
- * 
- * @class Class representing the Postkutsche client
+/** @class Class representing the Postkutsche client
  * @example
     (async () => {
     //import the process.env variables from the .env file in which you should store them
