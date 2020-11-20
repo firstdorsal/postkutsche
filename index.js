@@ -134,6 +134,7 @@ module.exports.Postkutsche = class {
      * @param {Info} info {@link https://doc.y.gy/postkutsche/global.html#Info Info} object with the necessary information to generate the tlsa records
      * @async
      * @returns {Array} with tlsa records ready to be inserted into powerdns
+     * @function
      * @example
         await pk.getTLSA({
             mailServerHostname: 'mail.domain.tld',
