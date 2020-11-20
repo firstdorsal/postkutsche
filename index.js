@@ -72,9 +72,8 @@ const {
 *
 */
 
-/** @module Postkutsche*/
-/**
- * 
+/** @module postkutsche*/
+/** 
  * @class Class representing the Postkutsche client
  * @example
     (async () => {
