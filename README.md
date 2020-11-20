@@ -109,15 +109,15 @@ Feel free to contact me via [xl9jthv_7bvgakv9o9wg0jabn2ylm91xxrzzgt0e@y.gy](mail
 * [postkutsche](#module_postkutsche)
     * [.Postkutsche](#module_postkutsche.Postkutsche)
         * [new module.exports.Postkutsche(info)](#new_module_postkutsche.Postkutsche_new)
-        * [.genMailDomainRecords](#module_postkutsche.Postkutsche+genMailDomainRecords) ⇒ <code>Array</code>
-        * [.addMailDomain](#module_postkutsche.Postkutsche+addMailDomain) ⇒ <code>Boolean</code>
-        * [.addMailServerDnsRecords](#module_postkutsche.Postkutsche+addMailServerDnsRecords) ⇒ <code>Boolean</code>
-        * [.openpgpHash](#module_postkutsche.Postkutsche+openpgpHash)
-        * [.openpgpRecord](#module_postkutsche.Postkutsche+openpgpRecord) ⇒ <code>OpenpgpRecord</code>
-        * [.setOpenpgpRecord](#module_postkutsche.Postkutsche+setOpenpgpRecord)
-        * [.cleanupAddMailServer](#module_postkutsche.Postkutsche+cleanupAddMailServer)
-        * [.cleanupAddMailDomain](#module_postkutsche.Postkutsche+cleanupAddMailDomain)
         * [.getTLSA(info)](#module_postkutsche.Postkutsche+getTLSA) ⇒ <code>Array</code>
+        * [.genMailDomainRecords(info)](#module_postkutsche.Postkutsche+genMailDomainRecords) ⇒ <code>Array</code>
+        * [.addMailDomain(info, [log])](#module_postkutsche.Postkutsche+addMailDomain) ⇒ <code>Boolean</code>
+        * [.addMailServerDnsRecords(info, [log])](#module_postkutsche.Postkutsche+addMailServerDnsRecords) ⇒ <code>Boolean</code>
+        * [.openpgpHash(localPart)](#module_postkutsche.Postkutsche+openpgpHash)
+        * [.openpgpRecord(localPart, publicKeyB64)](#module_postkutsche.Postkutsche+openpgpRecord) ⇒ <code>OpenpgpRecord</code>
+        * [.setOpenpgpRecord(localPart, domain, publicKeyB64)](#module_postkutsche.Postkutsche+setOpenpgpRecord)
+        * [.cleanupAddMailServer(info)](#module_postkutsche.Postkutsche+cleanupAddMailServer)
+        * [.cleanupAddMailDomain(info)](#module_postkutsche.Postkutsche+cleanupAddMailDomain)
 
 <a name="module_postkutsche.Postkutsche"></a>
 
@@ -128,15 +128,15 @@ Class representing the Postkutsche client
 
 * [.Postkutsche](#module_postkutsche.Postkutsche)
     * [new module.exports.Postkutsche(info)](#new_module_postkutsche.Postkutsche_new)
-    * [.genMailDomainRecords](#module_postkutsche.Postkutsche+genMailDomainRecords) ⇒ <code>Array</code>
-    * [.addMailDomain](#module_postkutsche.Postkutsche+addMailDomain) ⇒ <code>Boolean</code>
-    * [.addMailServerDnsRecords](#module_postkutsche.Postkutsche+addMailServerDnsRecords) ⇒ <code>Boolean</code>
-    * [.openpgpHash](#module_postkutsche.Postkutsche+openpgpHash)
-    * [.openpgpRecord](#module_postkutsche.Postkutsche+openpgpRecord) ⇒ <code>OpenpgpRecord</code>
-    * [.setOpenpgpRecord](#module_postkutsche.Postkutsche+setOpenpgpRecord)
-    * [.cleanupAddMailServer](#module_postkutsche.Postkutsche+cleanupAddMailServer)
-    * [.cleanupAddMailDomain](#module_postkutsche.Postkutsche+cleanupAddMailDomain)
     * [.getTLSA(info)](#module_postkutsche.Postkutsche+getTLSA) ⇒ <code>Array</code>
+    * [.genMailDomainRecords(info)](#module_postkutsche.Postkutsche+genMailDomainRecords) ⇒ <code>Array</code>
+    * [.addMailDomain(info, [log])](#module_postkutsche.Postkutsche+addMailDomain) ⇒ <code>Boolean</code>
+    * [.addMailServerDnsRecords(info, [log])](#module_postkutsche.Postkutsche+addMailServerDnsRecords) ⇒ <code>Boolean</code>
+    * [.openpgpHash(localPart)](#module_postkutsche.Postkutsche+openpgpHash)
+    * [.openpgpRecord(localPart, publicKeyB64)](#module_postkutsche.Postkutsche+openpgpRecord) ⇒ <code>OpenpgpRecord</code>
+    * [.setOpenpgpRecord(localPart, domain, publicKeyB64)](#module_postkutsche.Postkutsche+setOpenpgpRecord)
+    * [.cleanupAddMailServer(info)](#module_postkutsche.Postkutsche+cleanupAddMailServer)
+    * [.cleanupAddMailDomain(info)](#module_postkutsche.Postkutsche+cleanupAddMailDomain)
 
 <a name="new_module_postkutsche.Postkutsche_new"></a>
 
@@ -194,10 +194,28 @@ Create a postkutsche client.
     await pk.addMailDomain(info);
 })();
 ```
+<a name="module_postkutsche.Postkutsche+getTLSA"></a>
+
+#### postkutsche.getTLSA(info) ⇒ <code>Array</code>
+**Kind**: instance method of [<code>Postkutsche</code>](#module_postkutsche.Postkutsche)  
+**Returns**: <code>Array</code> - with tlsa records ready to be inserted into powerdns  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| info | [<code>Info</code>](#Info) | [Info](https://doc.y.gy/postkutsche/global.html#Info) object with the necessary information to generate the tlsa records |
+
+**Example**  
+```js
+await pk.getTLSA({
+            mailServerHostname: 'mail.domain.tld',
+            mailServerIp: '2a00:1450:4016:801::2003',
+            mailServerLegacyIp: '127.0.0.1'
+        });
+```
 <a name="module_postkutsche.Postkutsche+genMailDomainRecords"></a>
 
-#### postkutsche.genMailDomainRecords ⇒ <code>Array</code>
-**Kind**: instance property of [<code>Postkutsche</code>](#module_postkutsche.Postkutsche)  
+#### postkutsche.genMailDomainRecords(info) ⇒ <code>Array</code>
+**Kind**: instance method of [<code>Postkutsche</code>](#module_postkutsche.Postkutsche)  
 **Returns**: <code>Array</code> - with domain relevant mail records  
 
 | Param | Type | Description |
@@ -214,7 +232,7 @@ pk.genMailDomainRecords({
 ```
 <a name="module_postkutsche.Postkutsche+addMailDomain"></a>
 
-#### postkutsche.addMailDomain ⇒ <code>Boolean</code>
+#### postkutsche.addMailDomain(info, [log]) ⇒ <code>Boolean</code>
 This will add:
  - Mailcow: 
      - Domain (if not present)
@@ -227,7 +245,7 @@ This will add:
      - DNSSEC (if domain wasn't present)
      - Create record on mailServerDomain(if not the same as mailDomain) to allow dmarc mails to sent to this domain
 
-**Kind**: instance property of [<code>Postkutsche</code>](#module_postkutsche.Postkutsche)  
+**Kind**: instance method of [<code>Postkutsche</code>](#module_postkutsche.Postkutsche)  
 **Returns**: <code>Boolean</code> - true on success  
 
 | Param | Type | Default | Description |
@@ -252,7 +270,7 @@ await pk.addMailDomain({
 ```
 <a name="module_postkutsche.Postkutsche+addMailServerDnsRecords"></a>
 
-#### postkutsche.addMailServerDnsRecords ⇒ <code>Boolean</code>
+#### postkutsche.addMailServerDnsRecords(info, [log]) ⇒ <code>Boolean</code>
 This will add:
  - PowerDns: 
      - Domain for the mailserver hostname (if not present)
@@ -260,7 +278,7 @@ This will add:
      - TLSA records for the domain (for the creation of the tlsa records you need to have openssl installed. you can specify the path, if it can't be found globally as 'openssl')
      - Records for the mailserver
 
-**Kind**: instance property of [<code>Postkutsche</code>](#module_postkutsche.Postkutsche)  
+**Kind**: instance method of [<code>Postkutsche</code>](#module_postkutsche.Postkutsche)  
 **Returns**: <code>Boolean</code> - true on success  
 
 | Param | Type | Default | Description |
@@ -282,10 +300,10 @@ await pk.addMailServerDnsRecords({
 ```
 <a name="module_postkutsche.Postkutsche+openpgpHash"></a>
 
-#### postkutsche.openpgpHash
+#### postkutsche.openpgpHash(localPart)
 Creates the front part of the openpgp dns record
 
-**Kind**: instance property of [<code>Postkutsche</code>](#module_postkutsche.Postkutsche)  
+**Kind**: instance method of [<code>Postkutsche</code>](#module_postkutsche.Postkutsche)  
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -297,10 +315,10 @@ console.log(pk.openpgpHash('max.mustermensch'));
 ```
 <a name="module_postkutsche.Postkutsche+openpgpRecord"></a>
 
-#### postkutsche.openpgpRecord ⇒ <code>OpenpgpRecord</code>
+#### postkutsche.openpgpRecord(localPart, publicKeyB64) ⇒ <code>OpenpgpRecord</code>
 Creates an openpgp dns record
 
-**Kind**: instance property of [<code>Postkutsche</code>](#module_postkutsche.Postkutsche)  
+**Kind**: instance method of [<code>Postkutsche</code>](#module_postkutsche.Postkutsche)  
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -313,11 +331,11 @@ console.log(pk.openpgpRecord('max.mustermensch','-----BEGIN PGP (...)'));
 ```
 <a name="module_postkutsche.Postkutsche+setOpenpgpRecord"></a>
 
-#### postkutsche.setOpenpgpRecord
+#### postkutsche.setOpenpgpRecord(localPart, domain, publicKeyB64)
 Sets an openpgp record on your powerdns server
 Will overwrite key with the same local part
 
-**Kind**: instance property of [<code>Postkutsche</code>](#module_postkutsche.Postkutsche)  
+**Kind**: instance method of [<code>Postkutsche</code>](#module_postkutsche.Postkutsche)  
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -331,10 +349,10 @@ await pk.setOpenpgpRecord('max.mustermensch','domain.tld','-----BEGIN PGP (...)'
 ```
 <a name="module_postkutsche.Postkutsche+cleanupAddMailServer"></a>
 
-#### postkutsche.cleanupAddMailServer
+#### postkutsche.cleanupAddMailServer(info)
 Will delete the complete mailserver domain from powerdns
 
-**Kind**: instance property of [<code>Postkutsche</code>](#module_postkutsche.Postkutsche)  
+**Kind**: instance method of [<code>Postkutsche</code>](#module_postkutsche.Postkutsche)  
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -346,11 +364,11 @@ pk.cleanupAddMailServer({mailServerHostname:'mail.domain.tld'});
 ```
 <a name="module_postkutsche.Postkutsche+cleanupAddMailDomain"></a>
 
-#### postkutsche.cleanupAddMailDomain
+#### postkutsche.cleanupAddMailDomain(info)
 Will delete a domain from powerdns and mailcow
 THIS WILL DELETE YOUR MAILBOX AND EVERYTHING ELSE CONCERNING THIS DOMAIN
 
-**Kind**: instance property of [<code>Postkutsche</code>](#module_postkutsche.Postkutsche)  
+**Kind**: instance method of [<code>Postkutsche</code>](#module_postkutsche.Postkutsche)  
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -366,24 +384,6 @@ await pk.cleanupAddMailDomain({
                  name: `Max Mustermensch`
              }
          });
-```
-<a name="module_postkutsche.Postkutsche+getTLSA"></a>
-
-#### postkutsche.getTLSA(info) ⇒ <code>Array</code>
-**Kind**: instance method of [<code>Postkutsche</code>](#module_postkutsche.Postkutsche)  
-**Returns**: <code>Array</code> - with tlsa records ready to be inserted into powerdns  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| info | [<code>Info</code>](#Info) | [Info](https://doc.y.gy/postkutsche/global.html#Info) object with the necessary information to generate the tlsa records |
-
-**Example**  
-```js
-await pk.getTLSA({
-            mailServerHostname: 'mail.domain.tld',
-            mailServerIp: '2a00:1450:4016:801::2003',
-            mailServerLegacyIp: '127.0.0.1'
-        });
 ```
 <a name="ApiInfo"></a>
 
