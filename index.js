@@ -121,7 +121,6 @@ const {
 })();
  */
 module.exports.Postkutsche = class {
-
     /**
      * Create a postkutsche client.
      * @constructor
@@ -131,7 +130,6 @@ module.exports.Postkutsche = class {
         this.mcc = new MailcowApiClient(info.mailcow.url, info.mailcow.apikey);
         this.pdns = new PowerdnsClient(info.powerdns.url, info.powerdns.apikey);
     }
-
     /**
      * @param {Info} info {@link https://doc.y.gy/postkutsche/global.html#Info Info} object with the necessary information to generate the tlsa records
      * @async
@@ -217,7 +215,6 @@ module.exports.Postkutsche = class {
         });
         return questions;
     }
-
     /**
      * @param {Info} info {@link https://doc.y.gy/postkutsche/global.html#Info Info} object with the necessary information to generate the domain mail records
      * @returns {Array} with domain relevant mail records
@@ -310,7 +307,6 @@ module.exports.Postkutsche = class {
             }
         ]
     }
-
     /**
      * This will add:
      *  - Mailcow: 
@@ -403,7 +399,6 @@ module.exports.Postkutsche = class {
         return true;
 
     }
-
     /**
      * This will add:
      *  - PowerDns: 
@@ -482,9 +477,7 @@ module.exports.Postkutsche = class {
         console.log(`Don't forget to add the DNSSEC domainkey above to your registrar.`);
 
         return true;
-
     }
-
     /**
      * Creates the front part of the openpgp dns record
      * @param {String} localPart local part of your email address (the part before the @ not including the @)
@@ -494,7 +487,6 @@ module.exports.Postkutsche = class {
     openpgpHash = (localPart) => {
         return crypto.createHash('sha256').update(localPart).digest('hex').substr(0, 56);
     }
-
     /**
      * Creates an openpgp dns record
      * @param {String} localPart local part of your email address (the part before the @ not including the @)
@@ -512,7 +504,6 @@ module.exports.Postkutsche = class {
             content: [c]
         }
     }
-
     /**
      * Sets an openpgp record on your powerdns server
      * Will overwrite key with the same local part
@@ -528,7 +519,6 @@ module.exports.Postkutsche = class {
         record.name = record.name + domain;
         await this.pdns.setRecords([record]).catch(e => console.log(e));
     }
-
     /**
      * Will delete the complete mailserver domain from powerdns
      * @param {Info} info {@link https://doc.y.gy/postkutsche/global.html#Info Info} object with the necessary information to delete the mailserver domain 
@@ -539,7 +529,6 @@ module.exports.Postkutsche = class {
     cleanupAddMailServer = async (info) => {
         await this.pdns.deleteZone(info.mailServerHostname);
     }
-
     /**
      * Will delete a domain from powerdns and mailcow
      * THIS WILL DELETE YOUR MAILBOX AND EVERYTHING ELSE CONCERNING THIS DOMAIN
