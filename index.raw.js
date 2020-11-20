@@ -218,6 +218,7 @@ module.exports.Postkutsche = class {
     }
     /**
      * @param {Info} info {@link DOC_URL/global.html#Info Info} object with the necessary information to generate the domain mail records
+     * @function
      * @returns {Array} with domain relevant mail records
      * @example
         pk.genMailDomainRecords({
@@ -321,6 +322,7 @@ module.exports.Postkutsche = class {
      *      - DNSSEC (if domain wasn't present)
      *      - Create record on mailServerDomain(if not the same as mailDomain) to allow dmarc mails to sent to this domain
      * @param {Info} info {@link DOC_URL/global.html#Info Info} object with the necessary information to create a mail domain on mailcow and the necessary records on powerdns
+     * @function
      * @param {Boolean} [log=true] you can disable logging by setting this to false
      * @async
      * @returns {Boolean} true on success
@@ -408,6 +410,7 @@ module.exports.Postkutsche = class {
      *      - TLSA records for the domain (for the creation of the tlsa records you need to have openssl installed. you can specify the path, if it can't be found globally as 'openssl')
      *      - Records for the mailserver
      * @param {Info} info {@link DOC_URL/global.html#Info Info} object with the necessary information to create the relevant records for the mailserver
+     * @function
      * @param {Boolean} [log=true] you can disable logging by setting this to false
      * @async
      * @returns {Boolean} true on success
@@ -482,6 +485,7 @@ module.exports.Postkutsche = class {
     /**
      * Creates the front part of the openpgp dns record
      * @param {String} localPart local part of your email address (the part before the @ not including the @)
+     * @function
      * @example
        console.log(pk.openpgpHash('max.mustermensch'));
      */
@@ -492,6 +496,7 @@ module.exports.Postkutsche = class {
      * Creates an openpgp dns record
      * @param {String} localPart local part of your email address (the part before the @ not including the @)
      * @param {String} publicKeyB64 your publickey in base64 (it should be correct if it includes -----BEGIN PGP PUBLICKEY BLOCK-----) or only contains these characters: A-Z a-z 0-9 + /
+     * @function
      * @returns {OpenpgpRecord}
      * @example
        console.log(pk.openpgpRecord('max.mustermensch','-----BEGIN PGP (...)'));
@@ -511,6 +516,7 @@ module.exports.Postkutsche = class {
      * @param {String} localPart local part of your email address (the part before the @ not including the @)
      * @param {String} domain the domain you want to add the key to
      * @param {String} publicKeyB64 your publickey in base64 (it should be correct if it includes -----BEGIN PGP PUBLICKEY BLOCK-----) or only contains these characters: A-Z a-z 0-9 + /
+     * @function
      * @async
      * @example
        await pk.setOpenpgpRecord('max.mustermensch','domain.tld','-----BEGIN PGP (...)');
@@ -523,6 +529,7 @@ module.exports.Postkutsche = class {
     /**
      * Will delete the complete mailserver domain from powerdns
      * @param {Info} info {@link DOC_URL/global.html#Info Info} object with the necessary information to delete the mailserver domain 
+     * @function
      * @async
      * @example
         pk.cleanupAddMailServer({mailServerHostname:'mail.domain.tld'});
@@ -534,6 +541,7 @@ module.exports.Postkutsche = class {
      * Will delete a domain from powerdns and mailcow
      * THIS WILL DELETE YOUR MAILBOX AND EVERYTHING ELSE CONCERNING THIS DOMAIN
      * @param {Info} info {@link DOC_URL/global.html#Info Info} object with the necessary information to create a mail domain on mailcow and the necessary records on powerdns
+     * @function
      * @async
      * @example
          await pk.cleanupAddMailDomain({
