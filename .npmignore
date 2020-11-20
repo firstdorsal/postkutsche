@@ -1,3 +1,4 @@
 .gitlab-ci.yml
 index.raw.js
 README_basic.md
+*.jpg
