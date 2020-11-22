@@ -51,7 +51,7 @@ mirror:
     - git add -A
     - git commit -m "🤖 mirror"
     - curl -u "firstdorsal:$GITHUB_TOKEN" https://api.github.com/user/repos -d '{"name":"$CI_PROJECT_NAME"}'
-    - git branch -M master
+    - git checkout -b master
     - git push -u origin master
 
 
