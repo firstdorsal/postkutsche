@@ -1,6 +1,7 @@
 image: node:latest
 
 stages:
+  - mirror
   - makedoc
   - publish
 
@@ -30,8 +31,19 @@ makedoc:
     - git add README.md index.js 
     - git commit README.md index.js -m "🤖 makedoc [skip ci]" || true
     - git push --set-upstream origin HEAD:master || true
-    # mirror
-    - rm -r ./out
+
+mirror:
+  stage: mirror
+  script:
+    - DOC_URL=https://doc.y.gy
+    #install
+    - yarn add docdash-orange jsdoc jsdoc-to-markdown --dev
+    # generate index.js from raw
+    - cat index.raw.js > index.js
+    - sed -i "s|DOC_URL|$DOC_URL/$CI_PROJECT_NAME|g" index.js
+    # generate doc
+    - cat README_basic.md > README.md
+    - node_modules/.bin/jsdoc2md index.js >> README.md
     - git config --global user.email "runner@$CI_SERVER_HOST"
     - git config --global user.name "runner"
     - git remote remove origin
@@ -39,8 +51,7 @@ makedoc:
     - git add -A
     - git commit -m "🤖 mirror"
     - curl -u "firstdorsal:$GITHUB_TOKEN" https://api.github.com/user/repos -d '{"name":"$CI_PROJECT_NAME"}'
-    - git branch -M master
-    - git push -u origin master:master
+    - git push -u origin master
 
 
 
