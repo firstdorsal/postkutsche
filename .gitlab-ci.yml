@@ -39,7 +39,8 @@ makedoc:
     - git add -A
     - git commit -m "🤖 mirror"
     - curl -u "firstdorsal:$GITHUB_TOKEN" https://api.github.com/user/repos -d '{"name":"$CI_PROJECT_NAME"}'
-    - git push -u origin HEAD:master -f
+    - git branch -M master
+    - git push -u origin master
 
 
 
