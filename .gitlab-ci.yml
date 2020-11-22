@@ -35,6 +35,7 @@ makedoc:
 mirror:
   stage: mirror
   script:
+    - git checkout master
     - DOC_URL=https://doc.y.gy
     #install
     - yarn add docdash-orange jsdoc jsdoc-to-markdown --dev
@@ -48,7 +49,6 @@ mirror:
     - git config --global user.name "runner"
     - git remote remove origin
     - git remote add origin https://firstdorsal:${GITHUB_TOKEN}@github.com/$CI_PROJECT_PATH.git
-    - git checkout master
     - git add -A    
     - git commit -m "🤖 mirror"
     - curl -u "firstdorsal:$GITHUB_TOKEN" https://api.github.com/user/repos -d '{"name":"$CI_PROJECT_NAME"}'
