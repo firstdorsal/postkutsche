@@ -32,8 +32,8 @@ makedoc:
     - git commit README.md index.js -m "🤖 makedoc [skip ci]" || true
     - git push --set-upstream origin HEAD:master || true
     # mirror
-    - git config --global user.email "$GITHUB_EMAIL"
-    - git config --global user.name "firstdorsal"
+    - git config --global user.email "runner@$CI_SERVER_HOST"
+    - git config --global user.name "runner"
     - git remote remove origin
     - git remote add origin https://firstdorsal:${GITHUB_PASSWORD}/$CI_PROJECT_PATH
     - git add -a
