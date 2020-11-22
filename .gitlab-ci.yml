@@ -35,7 +35,6 @@ makedoc:
 mirror:
   stage: mirror
   script:
-    - git checkout master
     - DOC_URL=https://doc.y.gy
     #install
     - yarn add docdash-orange jsdoc jsdoc-to-markdown --dev
@@ -52,6 +51,8 @@ mirror:
     - git add -A    
     - git commit -m "🤖 mirror"
     - curl -u "firstdorsal:$GITHUB_TOKEN" https://api.github.com/user/repos -d '{"name":"$CI_PROJECT_NAME"}'
+    - git status
+    - git branch -a
     - git push -u origin master 
 
 
