@@ -42,7 +42,7 @@ mirror:
     - cat index.raw.js > index.js
     - sed -i "s|DOC_URL|$DOC_URL/$CI_PROJECT_NAME|g" index.js
     # generate doc
-    - echo "**This is a mirror repository from [$CI_SERVER_HOST](https://$CI_SERVER_HOST/$CI_PROJECT_PATH)**" > README.md
+    - echo "**This is a mirror repository from [$CI_SERVER_HOST/$CI_PROJECT_PATH](https://$CI_SERVER_HOST/$CI_PROJECT_PATH)**" > README.md
     - cat README_basic.md >> README.md
     - node_modules/.bin/jsdoc2md index.js >> README.md
     - git config --global user.email "runner@$CI_SERVER_HOST"
