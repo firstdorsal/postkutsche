@@ -1,11 +1,14 @@
+# Postkutsche
+<img draggable="none" src="https://git.y.gy/firstdorsal/postkutsche/-/raw/master/logo.jpg" style="float:left; margin-right:10px;" height="100"> 
+
+## A module that combines **PowerDns** and **Mailcow** to create a mail domain with all required entries on both services in a single command.
+
 [![npm](https://ico.y.gy/npm/dm/postkutsche?style=flat-square&logo=npm)](https://www.npmjs.com/package/postkutsche)
 [![NPM](https://ico.y.gy/npm/l/postkutsche?style=flat-square)](https://www.npmjs.com/package/postkutsche)
 [![Snyk Vulnerabilities for npm package](https://ico.y.gy/snyk/vulnerabilities/npm/postkutsche?style=flat-square&logo=snyk)](https://snyk.io/test/npm/postkutsche)
-[![Website](https://ico.y.gy/website?down_color=red&down_message=offline&label=documentation&up_color=success&up_message=online&url=https%3A%2F%2Fdoc.y.gy%2Fpostkutsche&style=flat-square)](https://doc.y.gy/postkutsche/)
+[![Website](https://ico.y.gy/website?down_color=red&down_message=offline&label=documentation&up_color=success&up_message=online&url=https%3A%2F%2Fdoc.y.gy%2Fpostkutsche&style=flat-square&logo=)](https://doc.y.gy/postkutsche/)
 [![Website](https://ico.y.gy/website?down_color=red&down_message=offline&label=repository&up_color=success&up_message=online&url=https%3A%2F%2Fgit.y.gy%2Ffirstdorsal%2Fpostkutsche&style=flat-square&logo=gitlab)](https://git.y.gy/firstdorsal/postkutsche/)
 
-# Description
-A module that combines **PowerDns** and **Mailcow** to create a mail domain with all required entries on both services in a single command.
 
 # Install
 ```
