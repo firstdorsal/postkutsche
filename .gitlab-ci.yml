@@ -36,7 +36,7 @@ makedoc:
     - git config --global user.name "runner"
     - git remote remove origin
     - git remote add origin https://firstdorsal:${GITHUB_PASSWORD}/$CI_PROJECT_PATH
-    - git add -a
+    - git add -A
     - git commit -m "🤖 mirror"
     - git push --set-upstream origin HEAD:master || true
 
