@@ -58,7 +58,7 @@ mirror:
     #gitlab
     - git remote remove origin
     - git remote add origin https://firstdorsal:${GITLAB_TOKEN}@gitlab.com/$CI_PROJECT_PATH.git
-    - git push --set-upstream origin HEAD:refs/heads/master -f
+    - git push --set-upstream origin HEAD:refs/heads/master
     - "curl --header 'Content-Type: application/json' --request GET 'https://gitlab.com/api/v4/projects/$CI_PROJECT_NAME?visibility=public&private_token=$GITLAB_TOKEN'"
 
 
