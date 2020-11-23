@@ -1,8 +1,8 @@
 image: node:latest
 
-stages:
-  - mirror
+stages:  
   - makedoc
+  - mirror
   - publish
 
 makedoc:
