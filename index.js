@@ -2,15 +2,11 @@
 
 const exec = require(`util`).promisify(require(`child_process`).exec);
 const secondLevelRegex = new RegExp(/[A-Z-a-z0-9]{1,63}\.[A-Z-a-z0-9]{1,63}$/);
-const crypto = require('crypto');
+const crypto = require("crypto");
 
 //import the clients
-const {
-    MailcowApiClient
-} = require("mailcow-api")
-const {
-    PowerdnsClient
-} = require('@firstdorsal/powerdns-api');
+const { MailcowApiClient } = require("mailcow-api");
+const { PowerdnsClient } = require("@firstdorsal/powerdns-api");
 
 /**
  * @typedef ApiInfo
@@ -142,66 +138,80 @@ module.exports.Postkutsche = class {
             mailServerLegacyIp: '127.0.0.1'
         });
      */
-    getTLSA = async (info) => {
+    getTLSA = async info => {
         if (!info.openssl_path) info.openssl_path = `openssl`;
 
-        const questions = [{
-            name: `smtp over starttls`,
-            port: 25,
-            starttls: {
-                type: `smtp`
+        const questions = [
+            {
+                name: `smtp over starttls`,
+                port: 25,
+                starttls: {
+                    type: `smtp`
+                }
+            },
+            {
+                name: `web over tls`,
+                port: 443,
+                starttls: false
+            },
+            {
+                name: `pop3 over starttls`,
+                port: 110,
+                starttls: {
+                    type: `pop3`
+                }
+            },
+            {
+                name: `imap over starttls`,
+                port: 143,
+                starttls: {
+                    type: `imap`
+                }
+            },
+            {
+                name: `smtps over tls`,
+                port: 465,
+                starttls: false
+            },
+            {
+                name: `submission over starttls`,
+                port: 587,
+                starttls: {
+                    type: `smtp`
+                }
+            },
+            {
+                name: `imaps over tls`,
+                port: 993,
+                starttls: false
+            },
+            {
+                name: `pop3s over tls`,
+                port: 995,
+                starttls: false
+            },
+            {
+                name: `sieve over starttls`,
+                port: 4190,
+                starttls: {
+                    type: `sieve`
+                }
             }
-        }, {
-            name: `web over tls`,
-            port: 443,
-            starttls: false
-        }, {
-            name: `pop3 over starttls`,
-            port: 110,
-            starttls: {
-                type: `pop3`
-            }
-        }, {
-            name: `imap over starttls`,
-            port: 143,
-            starttls: {
-                type: `imap`
-            }
-        }, {
-            name: `smtps over tls`,
-            port: 465,
-            starttls: false
-        }, {
-            name: `submission over starttls`,
-            port: 587,
-            starttls: {
-                type: `smtp`
-            }
-        }, {
-            name: `imaps over tls`,
-            port: 993,
-            starttls: false
-        }, {
-            name: `pop3s over tls`,
-            port: 995,
-            starttls: false
-        }, {
-            name: `sieve over starttls`,
-            port: 4190,
-            starttls: {
-                type: `sieve`
-            }
-        }];
-        const answers = await Promise.all(questions.map((e) => {
-            e.answer = exec(`
+        ];
+        const answers = await Promise.all(
+            questions.map(e => {
+                e.answer = exec(`
         echo | 
-        ${info.openssl_path} s_client -servername ${info.mailServerHostname} -connect ${info.mailServerIp?info.mailServerIp:info.mailServerLegacyIp}:${e.port} ${e.starttls?`-starttls `+e.starttls.type:``} 2>/dev/null | 
+        ${info.openssl_path} s_client -servername ${info.mailServerHostname} -connect ${info.mailServerIp ? info.mailServerIp : info.mailServerLegacyIp}:${e.port} ${
+                    e.starttls ? `-starttls ` + e.starttls.type : ``
+                } 2>/dev/null | 
         openssl x509 -pubkey -noout | 
         openssl pkey -pubin -outform DER | 
         openssl sha256 |
-        sed 's/(stdin)= //g'`)
-            return e.answer;
-        }));
+        sed 's/(stdin)= //g'`);
+                return e.answer;
+            })
+        );
         questions.map((e, i) => {
             delete e.answer;
             const sha256 = answers[i].stdout.replace(`\n`, ``);
@@ -212,10 +222,10 @@ module.exports.Postkutsche = class {
                 name: `_${e.port}._tcp.${info.mailServerHostname}.`,
                 type: `TLSA`,
                 content: [`3 1 1 ${sha256}`]
-            }
+            };
         });
         return questions;
-    }
+    };
     /**
      * @param {Info} info {@link https://doc.y.gy/postkutsche/global.html#Info Info} object with the necessary information to generate the domain mail records
      * @function
@@ -227,88 +237,95 @@ module.exports.Postkutsche = class {
             dmarcMail: 'dmarc@domain.tld'
         });
      */
-    genMailDomainRecords = (info) => {
-        return [{
+    genMailDomainRecords = info => {
+        return [
+            {
                 name: `${info.mailDomain}.`,
-                type: 'MX',
+                type: "MX",
                 content: [`10 ${info.mailServerHostname}.`]
-            }, {
+            },
+            {
                 name: `autodiscover.${info.mailDomain}.`,
-                type: 'CNAME',
+                type: "CNAME",
                 content: [`${info.mailServerHostname}.`]
-            }, {
+            },
+            {
                 name: `_autodiscover._tcp.${info.mailDomain}.`,
-                type: 'SRV',
+                type: "SRV",
                 content: [`0 1 443 ${info.mailServerHostname}.`]
-            }, {
+            },
+            {
                 name: `autoconfig.${info.mailDomain}.`,
-                type: 'CNAME',
+                type: "CNAME",
                 content: [`${info.mailServerHostname}.`]
-            }, {
+            },
+            {
                 name: `${info.mailDomain}.`,
                 type: `TXT`,
                 content: [`"v=spf1 MX -all"`]
-            }, {
+            },
+            {
                 name: `_dmarc.${info.mailDomain}.`,
                 type: `TXT`,
-                content: [`"v=DMARC1;p=reject;sp=reject;${info.dmarcMail?"rua=mailto:"+info.dmarcMail+";ruf=mailto:"+info.dmarcMail+";":""}adkim=s;aspf=s;"`]
-            }, {
+                content: [`"v=DMARC1;p=reject;sp=reject;${info.dmarcMail ? "rua=mailto:" + info.dmarcMail + ";ruf=mailto:" + info.dmarcMail + ";" : ""}adkim=s;aspf=s;"`]
+            },
+            {
                 name: `_imap._tcp.${info.mailDomain}.`,
-                type: 'SRV',
+                type: "SRV",
                 content: [`0 1 143 ${info.mailServerHostname}.`]
             },
             {
                 name: `_imaps._tcp.${info.mailDomain}.`,
-                type: 'SRV',
+                type: "SRV",
                 content: [`0 1 993 ${info.mailServerHostname}.`]
             },
             {
                 name: `_pop3._tcp.${info.mailDomain}.`,
-                type: 'SRV',
+                type: "SRV",
                 content: [`0 1 110 ${info.mailServerHostname}.`]
             },
             {
                 name: `_pop3s._tcp.${info.mailDomain}.`,
-                type: 'SRV',
+                type: "SRV",
                 content: [`0 1 995 ${info.mailServerHostname}.`]
             },
             {
                 name: `_submission._tcp.${info.mailDomain}.`,
-                type: 'SRV',
+                type: "SRV",
                 content: [`0 1 587 ${info.mailServerHostname}.`]
             },
             {
                 name: `_smtps._tcp.${info.mailDomain}.`,
-                type: 'SRV',
+                type: "SRV",
                 content: [`0 1 465 ${info.mailServerHostname}.`]
             },
             {
                 name: `_sieve._tcp.${info.mailDomain}.`,
-                type: 'SRV',
+                type: "SRV",
                 content: [`0 1 4190 ${info.mailServerHostname}.`]
             },
             {
                 name: `_carddavs._tcp.${info.mailDomain}.`,
-                type: 'SRV',
+                type: "SRV",
                 content: [`0 1 443 ${info.mailServerHostname}.`]
             },
             {
                 name: `_caldavs._tcp.${info.mailDomain}.`,
-                type: 'SRV',
+                type: "SRV",
                 content: [`0 1 443 ${info.mailServerHostname}.`]
             },
             {
                 name: `_carddavs._tcp.${info.mailDomain}.`,
-                type: 'TXT',
+                type: "TXT",
                 content: [`"path=/SOGo/dav/"`]
             },
             {
                 name: `_caldavs._tcp.${info.mailDomain}.`,
-                type: 'TXT',
+                type: "TXT",
                 content: [`"path=/SOGo/dav/"`]
             }
-        ]
-    }
+        ];
+    };
     /**
      * This will add:
      *  - Mailcow: 
@@ -359,7 +376,7 @@ module.exports.Postkutsche = class {
 
         records.push({
             name: `dkim._domainkey.${info.mailDomain}.`,
-            type: 'TXT',
+            type: "TXT",
             content: [`"${add[2].dkim_txt}"`]
         });
 
@@ -367,11 +384,15 @@ module.exports.Postkutsche = class {
             if (log) {
                 console.log(`Adding record to DMARC mail domain ${info.dmarcMail.match(secondLevelRegex)[0]} to allow the sending of ${info.mailDomain} DMARC reports there`);
             }
-            this.pdns.setHomogeneousRecords([{
-                name: `${info.mailDomain}._report._dmarc.${info.dmarcMail.match(secondLevelRegex)[0]}`,
-                type: 'TXT',
-                content: [`"v=DMARC1"`]
-            }]).catch(e => console.log(e))
+            this.pdns
+                .setHomogeneousRecords([
+                    {
+                        name: `${info.mailDomain}._report._dmarc.${info.dmarcMail.match(secondLevelRegex)[0]}`,
+                        type: "TXT",
+                        content: [`"v=DMARC1"`]
+                    }
+                ])
+                .catch(e => console.log(e));
         }
         if (log) {
             console.log(`Adding generated records to PowerDns server`);
@@ -400,8 +421,7 @@ module.exports.Postkutsche = class {
         }
         console.log(`Don't forget to add the DNSSEC domainkey above to your registrar.`);
         return true;
-
-    }
+    };
     /**
      * This will add:
      *  - PowerDns: 
@@ -426,7 +446,7 @@ module.exports.Postkutsche = class {
     });
      */
     addMailServerDnsRecords = async (info, log = true) => {
-        info.domain = info.mailServerHostname
+        info.domain = info.mailServerHostname;
         if (log) {
             console.log(`Adding zone ${info.mailServerHostname} to PowerDns if it doesn't exist`);
         }
@@ -440,24 +460,26 @@ module.exports.Postkutsche = class {
         if (log) {
             console.log(`Creating TLSA records for your mail server domain.`);
             console.log(`Info: You need to have openssl installed for this to work`);
-            console.log(`Info: If openssl is not accessible throug the global command 'openssl' you can specify the path by adding it to the passed info object with the key 'openssl_path' for more information look here https://doc.y.gy/postkutsche/global.html#Info`);
+            console.log(
+                `Info: If openssl is not accessible throug the global command 'openssl' you can specify the path by adding it to the passed info object with the key 'openssl_path' for more information look here https://doc.y.gy/postkutsche/global.html#Info`
+            );
         }
-        const records = (await this.getTLSA(info)).map((e) => {
-            return e.dns
+        const records = (await this.getTLSA(info)).map(e => {
+            return e.dns;
         });
         if (log) console.log(`Adding mail server ip records`);
 
         if (info.mailServerLegacyIp) {
             records.push({
                 name: info.mailServerHostname,
-                type: 'A',
+                type: "A",
                 content: [info.mailServerLegacyIp]
             });
         }
         if (info.mailServerIp) {
             records.push({
                 name: info.mailServerHostname,
-                type: 'AAAA',
+                type: "AAAA",
                 content: [info.mailServerIp]
             });
         }
@@ -465,10 +487,10 @@ module.exports.Postkutsche = class {
             if (log) console.log(`Adding mail server caa records`);
 
             const content = [`0 issue "digicert.com"`, `0 issue "letsencrypt.org"`];
-            info.caaReportMail ? content.push(`0 iodef "mailto:${info.caaReportMail}"`) : '';
+            info.caaReportMail ? content.push(`0 iodef "mailto:${info.caaReportMail}"`) : "";
             records.push({
                 name: info.mailServerHostname.match(secondLevelRegex)[0],
-                type: 'CAA',
+                type: "CAA",
                 content: content
             });
         }
@@ -481,7 +503,7 @@ module.exports.Postkutsche = class {
         console.log(`Don't forget to add the DNSSEC domainkey above to your registrar.`);
 
         return true;
-    }
+    };
     /**
      * Creates the front part of the openpgp dns record
      * @param {String} localPart local part of your email address (the part before the @ not including the @)
@@ -489,9 +511,9 @@ module.exports.Postkutsche = class {
      * @example
        console.log(pk.openpgpHash('max.mustermensch'));
      */
-    openpgpHash = (localPart) => {
-        return crypto.createHash('sha256').update(localPart).digest('hex').substr(0, 56);
-    }
+    openpgpHash = localPart => {
+        return crypto.createHash("sha256").update(localPart).digest("hex").substr(0, 56);
+    };
     /**
      * Creates an openpgp dns record
      * @param {String} localPart local part of your email address (the part before the @ not including the @)
@@ -502,14 +524,19 @@ module.exports.Postkutsche = class {
        console.log(pk.openpgpRecord('max.mustermensch','-----BEGIN PGP (...)'));
      */
     openpgpRecord = (localPart, publicKeyB64) => {
-        const c = publicKeyB64.replaceAll(/[\n\r\s]*/g, '').replace('-----BEGINPGPPUBLICKEYBLOCK-----', '').replace('-----ENDPGPPUBLICKEYBLOCK-----', '').match(/^[A-Za-z0-9+/]*/)[0];
-        if (!c) throw Error('Invalid Public Key')
+        const c = publicKeyB64
+            .replaceAll(/[\n\r\s]*/g, "")
+            .replace("-----BEGINPGPPUBLICKEYBLOCK-----", "")
+            .replace("-----ENDPGPPUBLICKEYBLOCK-----", "")
+            .match(/^[A-Za-z0-9+/]*/)[0];
+        const c2 = c.substr(c.indexOf("mQ"));
+        if (!c2) throw Error("Invalid Public Key");
         return {
-            name: `${this.openpgpHash(localPart)}._openpgpkey.`,
+            name: `${this.openpgpHash(localPart)}._openpgpkey`,
             type: `OPENPGPKEY`,
-            content: [c]
-        }
-    }
+            content: [c2]
+        };
+    };
     /**
      * Sets an openpgp record on your powerdns server
      * Will overwrite key with the same local part
@@ -525,7 +552,7 @@ module.exports.Postkutsche = class {
         const record = this.openpgpRecord(localPart, publicKeyB64);
         record.name = record.name + domain;
         await this.pdns.setRecords([record]).catch(e => console.log(e));
-    }
+    };
     /**
      * Will delete the complete mailserver domain from powerdns
      * @param {Info} info {@link https://doc.y.gy/postkutsche/global.html#Info Info} object with the necessary information to delete the mailserver domain 
@@ -534,9 +561,9 @@ module.exports.Postkutsche = class {
      * @example
         pk.cleanupAddMailServer({mailServerHostname:'mail.domain.tld'});
      */
-    cleanupAddMailServer = async (info) => {
+    cleanupAddMailServer = async info => {
         await this.pdns.deleteZone(info.mailServerHostname);
-    }
+    };
     /**
      * Will delete a domain from powerdns and mailcow
      * THIS WILL DELETE YOUR MAILBOX AND EVERYTHING ELSE CONCERNING THIS DOMAIN
@@ -553,18 +580,18 @@ module.exports.Postkutsche = class {
              }
          });
      */
-    cleanupAddMailDomain = async (info) => {
+    cleanupAddMailDomain = async info => {
         await this.mcc.deleteMailbox(`${info.defaultMailbox.local_part}@${info.mailDomain}`).catch(e => console.log(e));
-        await Promise.all([
-            this.mcc.deleteDomain(info.mailDomain),
-            this.mcc.deleteDKIM(info.mailDomain),
-            this.pdns.deleteZone(info.mailDomain),
-        ]);
+        await Promise.all([this.mcc.deleteDomain(info.mailDomain), this.mcc.deleteDKIM(info.mailDomain), this.pdns.deleteZone(info.mailDomain)]);
         if (info.dmarcMail && info.mailDomain !== info.dmarcMail.match(secondLevelRegex)[0]) {
-            this.pdns.deleteRecords([{
-                name: `${info.mailDomain}._report._dmarc.${info.dmarcMail.match(secondLevelRegex)[0]}`,
-                type: 'TXT'
-            }]).catch(e => console.log(e));
+            this.pdns
+                .deleteRecords([
+                    {
+                        name: `${info.mailDomain}._report._dmarc.${info.dmarcMail.match(secondLevelRegex)[0]}`,
+                        type: "TXT"
+                    }
+                ])
+                .catch(e => console.log(e));
         }
-    }
-}
+    };
+};
