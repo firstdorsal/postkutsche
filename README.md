@@ -114,7 +114,9 @@ Feel free to contact me via [xl9jthv_7bvgakv9o9wg0jabn2ylm91xxrzzgt0e@y.gy](mail
         * [new module.exports.Postkutsche(info)](#new_module_postkutsche.Postkutsche_new)
         * [.getTLSA(info)](#module_postkutsche.Postkutsche+getTLSA) ⇒ <code>Array</code>
         * [.genMailDomainRecords(info)](#module_postkutsche.Postkutsche+genMailDomainRecords) ⇒ <code>Array</code>
+        * [.addTLSARecordsToMailServerDomain(info, [log])](#module_postkutsche.Postkutsche+addTLSARecordsToMailServerDomain) ⇒ <code>Boolean</code>
         * [.addMailDomain(info, [log])](#module_postkutsche.Postkutsche+addMailDomain) ⇒ <code>Boolean</code>
+        * [.addMailDomainRecords(info, [log])](#module_postkutsche.Postkutsche+addMailDomainRecords) ⇒ <code>Boolean</code>
         * [.addMailServerDnsRecords(info, [log])](#module_postkutsche.Postkutsche+addMailServerDnsRecords) ⇒ <code>Boolean</code>
         * [.openpgpHash(localPart)](#module_postkutsche.Postkutsche+openpgpHash)
         * [.openpgpRecord(localPart, publicKeyB64)](#module_postkutsche.Postkutsche+openpgpRecord) ⇒ <code>OpenpgpRecord</code>
@@ -133,7 +135,9 @@ Class representing the Postkutsche client
     * [new module.exports.Postkutsche(info)](#new_module_postkutsche.Postkutsche_new)
     * [.getTLSA(info)](#module_postkutsche.Postkutsche+getTLSA) ⇒ <code>Array</code>
     * [.genMailDomainRecords(info)](#module_postkutsche.Postkutsche+genMailDomainRecords) ⇒ <code>Array</code>
+    * [.addTLSARecordsToMailServerDomain(info, [log])](#module_postkutsche.Postkutsche+addTLSARecordsToMailServerDomain) ⇒ <code>Boolean</code>
     * [.addMailDomain(info, [log])](#module_postkutsche.Postkutsche+addMailDomain) ⇒ <code>Boolean</code>
+    * [.addMailDomainRecords(info, [log])](#module_postkutsche.Postkutsche+addMailDomainRecords) ⇒ <code>Boolean</code>
     * [.addMailServerDnsRecords(info, [log])](#module_postkutsche.Postkutsche+addMailServerDnsRecords) ⇒ <code>Boolean</code>
     * [.openpgpHash(localPart)](#module_postkutsche.Postkutsche+openpgpHash)
     * [.openpgpRecord(localPart, publicKeyB64)](#module_postkutsche.Postkutsche+openpgpRecord) ⇒ <code>OpenpgpRecord</code>
@@ -233,6 +237,29 @@ pk.genMailDomainRecords({
             dmarcMail: 'dmarc@domain.tld'
         });
 ```
+<a name="module_postkutsche.Postkutsche+addTLSARecordsToMailServerDomain"></a>
+
+#### postkutsche.addTLSARecordsToMailServerDomain(info, [log]) ⇒ <code>Boolean</code>
+This will add:
+ - PowerDns:
+     - TLSA records for the domain (for the creation of the tlsa records you need to have openssl installed. you can specify the path, if it can't be found globally as 'openssl')
+
+**Kind**: instance method of [<code>Postkutsche</code>](#module_postkutsche.Postkutsche)  
+**Returns**: <code>Boolean</code> - true on success  
+
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| info | [<code>Info</code>](#Info) |  | [Info](https://doc.y.gy/postkutsche/global.html#Info) object with the necessary information to create the tlsa records on pdns |
+| [log] | <code>Boolean</code> | <code>true</code> | you can disable logging by setting this to false |
+
+**Example**  
+```js
+await pk.addTLSARecordsToMailDomain({
+            mailDomain: 'domain.tld',
+            mailServerHostname: 'mail.domain.tld',
+
+        });
+```
 <a name="module_postkutsche.Postkutsche+addMailDomain"></a>
 
 #### postkutsche.addMailDomain(info, [log]) ⇒ <code>Boolean</code>
@@ -268,6 +295,35 @@ await pk.addMailDomain({
                 local_part: `max.mustermensch`,
                 name: `Max Mustermensch`,
                 password:`set some good password here` //can be omitted
+            }
+        });
+```
+<a name="module_postkutsche.Postkutsche+addMailDomainRecords"></a>
+
+#### postkutsche.addMailDomainRecords(info, [log]) ⇒ <code>Boolean</code>
+This will add:
+ - PowerDns: 
+     - Domain (if not present)
+     - Mail records for the domain (won't touch other records but will overwrite present matching records)
+     - DNSSEC (if domain wasn't present)
+     - Create record on mailServerDomain(if not the same as mailDomain) to allow dmarc mails to sent to this domain
+
+**Kind**: instance method of [<code>Postkutsche</code>](#module_postkutsche.Postkutsche)  
+**Returns**: <code>Boolean</code> - true on success  
+
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| info | [<code>Info</code>](#Info) |  | [Info](https://doc.y.gy/postkutsche/global.html#Info) object with the necessary information to create a mail domain on mailcow and the necessary records on powerdns |
+| [log] | <code>Boolean</code> | <code>true</code> | you can disable logging by setting this to false |
+
+**Example**  
+```js
+await pk.addMailDomainRecords({
+            nameserver: ['ns1.domain.tld', 'ns2.domain.tld', 'ns3.domain.tld'],
+            hostmasterEmail: 'hostmaster@domain.tld',
+            dmarcMail: 'postmaster@domain.tld', 
+            mailDomain: 'domain.tld',
+            mailServerHostname: 'mail.domain.tld',
             }
         });
 ```

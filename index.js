@@ -326,6 +326,42 @@ module.exports.Postkutsche = class {
             }
         ];
     };
+
+    /**
+     * This will add:
+     *  - PowerDns:
+     *      - TLSA records for the domain (for the creation of the tlsa records you need to have openssl installed. you can specify the path, if it can't be found globally as 'openssl')
+     * @param {Info} info {@link https://doc.y.gy/postkutsche/global.html#Info Info} object with the necessary information to create the tlsa records on pdns
+     * @function
+     * @param {Boolean} [log=true] you can disable logging by setting this to false
+     * @async
+     * @returns {Boolean} true on success
+     * @example
+        await pk.addTLSARecordsToMailDomain({
+            mailDomain: 'domain.tld',
+            mailServerHostname: 'mail.domain.tld',
+
+        });
+     */
+    addTLSARecordsToMailServerDomain = async (info, log = true) => {
+        if (log) {
+            console.log(`Creating TLSA records for your mail server domain.`);
+            console.log(`Info: You need to have openssl installed for this to work`);
+            console.log(
+                `Info: If openssl is not accessible throug the global command 'openssl' you can specify the path by adding it to the passed info object with the key 'openssl_path' for more information look here https://doc.y.gy/postkutsche/global.html#Info`
+            );
+        }
+        const records = (await this.getTLSA(info)).map(e => {
+            return e.dns;
+        });
+        this.pdns.setHomogeneousRecords(records).catch(e => {
+            console.log(e);
+        });
+        if (log) console.log(`Finished adding records for the mail server ${info.mailServerHostname}`);
+
+        return true;
+    };
+
     /**
      * This will add:
      *  - Mailcow: 
@@ -425,6 +461,69 @@ module.exports.Postkutsche = class {
     /**
      * This will add:
      *  - PowerDns: 
+     *      - Domain (if not present)
+     *      - Mail records for the domain (won't touch other records but will overwrite present matching records)
+     *      - DNSSEC (if domain wasn't present)
+     *      - Create record on mailServerDomain(if not the same as mailDomain) to allow dmarc mails to sent to this domain
+     * @param {Info} info {@link https://doc.y.gy/postkutsche/global.html#Info Info} object with the necessary information to create a mail domain on mailcow and the necessary records on powerdns
+     * @function
+     * @param {Boolean} [log=true] you can disable logging by setting this to false
+     * @async
+     * @returns {Boolean} true on success
+     * @example
+        await pk.addMailDomainRecords({
+            nameserver: ['ns1.domain.tld', 'ns2.domain.tld', 'ns3.domain.tld'],
+            hostmasterEmail: 'hostmaster@domain.tld',
+            dmarcMail: 'postmaster@domain.tld', 
+            mailDomain: 'domain.tld',
+            mailServerHostname: 'mail.domain.tld',
+            }
+        });
+     */
+    addMailDomainRecords = async (info, log = true) => {
+        info.domain = info.mailDomain;
+        if (log) {
+            console.log(`Adding zone ${info.mailDomain} to PowerDns if it doesn't exist`);
+        }
+        const add = await Promise.all([this.pdns.createAndSetupZone(info)]);
+
+        console.log(`You have to add the following key to your domain at your registrar (where you bought the domain)`);
+        console.log(add[0]);
+
+        if (log) {
+            console.log(`Generating mail domain records for ${info.mailDomain}`);
+        }
+        const records = this.genMailDomainRecords(info);
+
+        if (info.dmarcMail && info.mailDomain !== info.dmarcMail.match(secondLevelRegex)[0]) {
+            if (log) {
+                console.log(`Adding record to DMARC mail domain ${info.dmarcMail.match(secondLevelRegex)[0]} to allow the sending of ${info.mailDomain} DMARC reports there`);
+            }
+            this.pdns
+                .setHomogeneousRecords([
+                    {
+                        name: `${info.mailDomain}._report._dmarc.${info.dmarcMail.match(secondLevelRegex)[0]}`,
+                        type: "TXT",
+                        content: [`"v=DMARC1"`]
+                    }
+                ])
+                .catch(e => console.log(e));
+        }
+        if (log) {
+            console.log(`Adding generated records to PowerDns server`);
+            console.log(`Adding mailbox to Mailcow server`);
+        }
+        const b = await Promise.all([this.pdns.setHomogeneousRecords(records).catch(e => console.log(e))]);
+
+        if (log) {
+            console.log(`Done adding records for domain ${info.mailDomain}`);
+        }
+        console.log(`Don't forget to add the DNSSEC domainkey above to your registrar.`);
+        return true;
+    };
+    /**
+     * This will add:
+     *  - PowerDns: 
      *      - Domain for the mailserver hostname (if not present)
      *      - DNSSEC (will replace old dnssec if present)
      *      - TLSA records for the domain (for the creation of the tlsa records you need to have openssl installed. you can specify the path, if it can't be found globally as 'openssl')
@@ -486,7 +585,7 @@ module.exports.Postkutsche = class {
         if (info.addLetsEncryptCAA) {
             if (log) console.log(`Adding mail server caa records`);
 
-            const content = [`0 issue "digicert.com"`, `0 issue "letsencrypt.org"`];
+            const content = [`0 issue "letsencrypt.org"`];
             info.caaReportMail ? content.push(`0 iodef "mailto:${info.caaReportMail}"`) : "";
             records.push({
                 name: info.mailServerHostname.match(secondLevelRegex)[0],
@@ -529,12 +628,11 @@ module.exports.Postkutsche = class {
             .replace("-----BEGINPGPPUBLICKEYBLOCK-----", "")
             .replace("-----ENDPGPPUBLICKEYBLOCK-----", "")
             .match(/^[A-Za-z0-9+/]*/)[0];
-        const c2 = c.substr(c.indexOf("mQ"));
-        if (!c2) throw Error("Invalid Public Key");
+        if (!c) throw Error("Invalid Public Key");
         return {
-            name: `${this.openpgpHash(localPart)}._openpgpkey`,
+            name: `${this.openpgpHash(localPart)}._openpgpkey.`,
             type: `OPENPGPKEY`,
-            content: [c2]
+            content: [c + "="]
         };
     };
     /**
